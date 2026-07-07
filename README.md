@@ -1,7 +1,5 @@
 # Sistema Eléctrico Argentino 2035 — Análisis con PyPSA-AR
 
-![Sistema Eléctrico Argentino — la brecha hacia 2035](assets/hero.png)
-
 **Análisis de la brecha entre la generación eléctrica real de Argentina (2005–2025) y la
 trayectoria de mínimo costo que proyecta PyPSA-AR hacia 2035**, con foco en la paradoja del
 crecimiento renovable sin desplazamiento térmico, la magnitud de la nueva capacidad necesaria
