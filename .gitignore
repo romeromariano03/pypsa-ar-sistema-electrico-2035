@@ -1,0 +1,15 @@
+# Datos locales (se obtienen de FTDT-PyPSA/PyPSA-AR en tiempo de ejecución)
+data/
+*.csv
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store

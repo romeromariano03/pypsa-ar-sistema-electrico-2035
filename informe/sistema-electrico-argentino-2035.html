@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sistema Eléctrico Argentino — PyPSA-AR</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #f9f9f7;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+/* ── Header ── */
+.header {
+  margin-bottom: 48px;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #666;
+  border: 1px solid #ccc;
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  line-height: 1.15;
+  color: #111;
+  margin-bottom: 14px;
+}
+
+.header h1 em {
+  font-style: normal;
+  color: #2563eb;
+}
+
+.byline {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.lead {
+  font-size: 17px;
+  color: #333;
+  line-height: 1.7;
+  max-width: 760px;
+  border-left: 3px solid #2563eb;
+  padding-left: 18px;
+}
+
+/* ── Explainer ── */
+.explainer {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 40px 0;
+}
+
+.explainer h2 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #2563eb;
+  margin-bottom: 14px;
+}
+
+.explainer p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.explainer p:last-child {
+  margin-bottom: 0;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.step {
+  padding: 16px 18px;
+  background: #f5f7ff;
+  border-radius: 4px;
+  border-top: 3px solid #2563eb;
+}
+
+.step .n {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.step p {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+}
+
+/* ── Sections ── */
+.section {
+  margin-top: 56px;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.section h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+}
+
+.section .desc {
+  font-size: 14px;
+  color: #555;
+  max-width: 760px;
+  margin-bottom: 24px;
+  line-height: 1.65;
+}
+
+.chart-wrap {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 20px 20px 8px;
+  margin-bottom: 16px;
+}
+
+.chart-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+/* ── Callouts & Cards ── */
+.insight {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: #e0e0e0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 24px 0;
+}
+
+.ins-item {
+  background: #fff;
+  padding: 20px 22px;
+}
+
+.ins-item .val {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.ins-item .val.blue { color: #2563eb; }
+.ins-item .val.green { color: #059669; }
+.ins-item .val.orange { color: #d97706; }
+
+.ins-item .val-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.challenge-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.challenge-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-left: 4px solid #2563eb;
+  border-radius: 4px;
+  padding: 20px 24px;
+}
+
+.challenge-card strong {
+  display: block;
+  font-size: 16px;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.challenge-card p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.lab-box {
+  background: #f4f7ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 32px;
+  margin-top: 32px;
+}
+
+.lab-box h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 12px;
+}
+
+.lab-box p.lab-intro {
+  font-size: 15px;
+  color: #1e40af;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.lab-category {
+  background: #fff;
+  border: 1px solid #dbeafe;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.lab-category h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #eff6ff;
+  padding-bottom: 6px;
+}
+
+.lab-list {
+  list-style: none;
+}
+
+.lab-list li {
+  font-size: 13px;
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 10px;
+  padding-left: 14px;
+  position: relative;
+}
+
+.lab-list li::before {
+  content: "•";
+  color: #2563eb;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.lab-list li strong {
+  color: #111;
+}
+
+.gap-box {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 24px 28px;
+  margin-top: 24px;
+}
+
+.gap-box h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.gap-box p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.gap-box p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .page { padding: 24px 16px 40px; }
+  .insight, .steps, .lab-grid { grid-template-columns: 1fr !important; }
+  .header h1 { font-size: 24px; }
+}
+
+footer {
+  margin-top: 56px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #999;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 48px 0;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="header">
+  <div class="tag">Análisis energético · Argentina · 2026</div>
+  <h1>20 años de datos del sistema eléctrico argentino<br>y lo que necesita pasar hasta <em>2035</em></h1>
+  <div class="byline">Mariano Romero · Mayo 2026 · Basado en CAMMESA (2005–2025) y PyPSA-AR v0.1</div>
+  <p class="lead">
+    Argentina pasó de 1,4% de cobertura renovable en 2005 a 18,9% en 2025. Un crecimiento real, 
+    sostenido, y aún así insuficiente. Este análisis combina 20 años de datos oficiales de CAMMESA 
+    con los resultados de PyPSA-AR, el primer modelo de optimización open-source del sistema eléctrico argentino.
+  </p>
+</div>
+
+<div class="explainer">
+  <h2>¿Qué es PyPSA-AR y cómo funciona?</h2>
+  <p>
+    <strong>PyPSA</strong> (Python for Power System Analysis) es un framework de código abierto utilizado a nivel internacional por universidades y operadores de red para modelar sistemas eléctricos. 
+    <strong>PyPSA-AR</strong> es su adaptación al caso argentino: un modelo calibrado por investigadores locales que representa la topología de la red de 500 kV del SADI (Sistema Argentino de Interconexión).
+  </p>
+  <p>
+    A diferencia de una simple planilla de proyección, el modelo responde a una pregunta técnica precisa: 
+    <strong>¿cuál es la expansión de menor costo posible (mínimo CAPEX y OPEX) que cumple con la demanda de energía proyectada al año 2035?</strong>
+  </p>
+  <div class="steps">
+    <div class="step">
+      <div class="n">01</div>
+      <p><strong>Toma como base</strong> la red real: localización de generadores existentes, límites de las líneas de 500 kV y perfiles de demanda histórica por región.</p>
+    </div>
+    <div class="step">
+      <div class="n">02</div>
+      <p><strong>Proyecta al 2035</strong> bajo supuestos macroeconómicos: crecimiento de la demanda, precios internacionales de combustibles y costos futuros de tecnología (solar, eólica, baterías).</p>
+    </div>
+    <div class="step">
+      <div class="n">03</div>
+      <p><strong>Encuentra el mínimo costo</strong> determinando con precisión qué centrales construir, en qué nodos de la red localizarlas y cómo operar todo el sistema hora a hora de forma óptima.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:18px; font-size:13px; color:#666; border-top: 1px solid #eee; padding-top: 14px;">
+    <strong>Importante:</strong> el resultado <em>no es una predicción</em> de lo que va a pasar.
+    Es un <em>benchmark de eficiencia</em>: muestra qué haría un mercado perfecto con información
+    perfecta. La realidad argentina — costo de capital, subsidios, incertidumbre regulatoria —
+    puede desviarse significativamente. Ese gap entre el óptimo técnico y la realidad institucional
+    es, en sí mismo, información valiosa.
+  </p>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="historico">
+  <div class="section-label">01 — Contexto histórico</div>
+  <h2>El mix de generación argentino 2005–2025</h2>
+  <p class="desc">
+    Dos décadas de datos demuestran que la estructura de abastecimiento eléctrica argentina mantiene una dependencia estructural del gas natural. El crecimiento renovable es real desde 2017, pero ocurrió por encima del crecimiento de la demanda, sin llegar a desplazar la base térmica del país.
+    La hidráulica es estable pero dependiente del ciclo hidrológico — un año seco como 2021 implicó una caída de ~5.000 GWh respecto al año anterior (fuente: CAMMESA).
+  </p>
+
+  <div class="insight">
+    <div class="ins-item">
+      <div class="val">147 TWh</div>
+      <div class="val-label">Demanda total MEM 2025<br><span style="font-size:11px; color:#aaa;">(vs ~96 TWh en 2005 · incluye importaciones y autogeneración)</span></div>
+    </div>
+    <div class="ins-item">
+      <div class="val orange">51%</div>
+      <div class="val-label">Participación del gas natural<br>en la generación de 2025</div>
+    </div>
+    <div class="ins-item">
+      <div class="val green">18,9%</div>
+      <div class="val-label">Cobertura renovable anual<br>alcanzada en 2025</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-label">Generación por tecnología — GWh anuales (2005–2025)</div>
+    <div id="c-stack" style="height:380px"></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-label">Cobertura renovable (%) y capacidad eólica + solar instalada (MW)</div>
+    <div id="c-ren" style="height:300px"></div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="paradoja">
+  <div class="section-label">02 — La paradoja del crecimiento renovable</div>
+  <h2>Argentina sumó renovables. El gas no bajó.</h2>
+  <p class="desc">
+    El análisis de los datos reales de CAMMESA revela un fenómeno contraintuitivo: la incorporación masiva de energía limpia no redujo el consumo de gas. Entre 2016 y 2025, el país incorporó más de 6.700 MW de potencia eólica y solar — el mayor ciclo inversor de su historia energética. Sin embargo, la generación de CCGT y turbinas a gas pasó de ~71.500 GWh en 2016 a ~70.900 GWh en 2025: prácticamente sin variación.
+    <br><br>
+    ¿Por qué? Porque la demanda eléctrica creció al mismo ritmo que la nueva capacidad renovable instalada. Las renovables cubrieron todo ese crecimiento incremental, pero no desplazaron la generación térmica base ya existente. El gas no subió, pero tampoco bajó. Sigue siendo el sostén estructural del sistema.
+  </p>
+
+  <div class="chart-wrap">
+    <div class="chart-label">Gas vs Renovables — GWh anuales</div>
+    <div id="c-gas-vs-ren" style="height:300px"></div>
+  </div>
+
+  <div class="gap-box">
+    <h3>¿Qué implica esto para la transición?</h3>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#e0e0e0; border:1px solid #e0e0e0; border-radius:4px; overflow:hidden; margin: 14px 0 18px;">
+      <div style="background:#fff; padding:16px 18px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#2563eb; letter-spacing:-0.5px;">+6.700 MW</div>
+        <div style="font-size:12px; color:#888; margin-top:4px;">Renovables incorporados<br>entre 2016 y 2025</div>
+      </div>
+      <div style="background:#fff; padding:16px 18px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#6b7280; letter-spacing:-0.5px;">≈ 0 GWh</div>
+        <div style="font-size:12px; color:#888; margin-top:4px;">Reducción neta de<br>generación a gas</div>
+      </div>
+      <div style="background:#fff; padding:16px 18px; text-align:center;">
+        <div style="font-size:24px; font-weight:700; color:#dc2626; letter-spacing:-0.5px;">+38 TWh</div>
+        <div style="font-size:12px; color:#888; margin-top:4px;">Crecimiento de la demanda<br>en el mismo período</div>
+      </div>
+    </div>
+
+    <p>
+      Los números lo explican: la demanda creció ~38 TWh en la misma década en que se instalaron
+      6.700 MW renovables. Las renovables cubrieron exactamente ese incremento, sin margen para
+      desplazar la base térmica existente. Para reducir la participación del gas — no solo detener
+      su crecimiento — Argentina necesita renovables a una velocidad superior al crecimiento de la
+      demanda, más infraestructura de transmisión para evacuar energía desde las zonas de recurso
+      (Patagonia, NOA) hacia los centros de consumo (AMBA, Litoral).
+    </p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="brecha">
+  <div class="section-label">03 — Lo que dice el modelo (Resolución k=10)</div>
+  <h2>La brecha hacia 2035 según PyPSA-AR</h2>
+  <p class="desc">
+    El escenario base del modelo (Business As Usual — BAU) proyecta que la trayectoria de menor costo para el sistema argentino requiere una transformación acelerada de la oferta. Para abastecer un mercado que crecerá hasta los 187 TWh anuales, la optimización económica determina que el 68% de la electricidad en 2035 debería provenir de fuentes renovables (principalmente eólica y solar).
+  </p>
+
+  <div class="insight" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="ins-item">
+      <div class="val blue">187 TWh</div>
+      <div class="val-label">Demanda proyectada<br>para el año 2035</div>
+    </div>
+    <div class="ins-item">
+      <div class="val green">68%</div>
+      <div class="val-label">Share renovable óptimo<br>en la matriz 2035</div>
+    </div>
+    <div class="ins-item">
+      <div class="val">26.000 MW</div>
+      <div class="val-label">Nueva capacidad eólica y solar<br>que se necesita construir</div>
+    </div>
+    <div class="ins-item">
+      <div class="val" style="color:#7c3aed;">−69%</div>
+      <div class="val-label">Intensidad CO₂ del sistema<br><span style="font-size:11px; color:#aaa;">0,235 → 0,073 tCO₂/MWh (PyPSA-AR)</span></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-label">Mix de generación (% del total): 2025 Real vs 2035 Optimizado BAU</div>
+    <div id="c-gap" style="height:340px"></div>
+  </div>
+
+  <div class="gap-box">
+    <h3>¿Qué significa la caída radical de "Otros"?</h3>
+    <p style="margin-bottom:14px;">En el escenario óptimo a 2035, la barra de "Otros" se contrae de forma masiva. El optimizador técnico tiene una decisión fácil: <strong>los combustibles líquidos son entre 4 y 7 veces más caros que el gas natural</strong>. Son los primeros en ser desplazados, siempre.</p>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#e0e0e0; border:1px solid #e0e0e0; border-radius:4px; overflow:hidden; margin-bottom:14px;">
+      <div style="background:#f0fdf4; padding:14px 16px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#059669; margin-bottom:6px;">Gas natural (CCGT)</div>
+        <div style="font-size:26px; font-weight:700; color:#059669; letter-spacing:-0.5px;">$36,5/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">CVP combustible + O&amp;M</div>
+      </div>
+      <div style="background:#fff3f3; padding:14px 16px; text-align:center;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#dc2626; margin-bottom:6px;">Gas oil / Fuel oil</div>
+        <div style="font-size:26px; font-weight:700; color:#dc2626; letter-spacing:-0.5px;">$158–264/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">CVP según tecnología</div>
+      </div>
+      <div style="background:#fff; padding:14px 16px; text-align:center; border-left:3px solid #d97706;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:#d97706; margin-bottom:6px;">Ratio de costo</div>
+        <div style="font-size:26px; font-weight:700; color:#d97706; letter-spacing:-0.5px;">4–7×</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">más caro que el gas natural</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:#555; margin-bottom:4px;">Lo que permanece en "Otros" en 2035 (~4.500 GWh) no es combustible líquido: es <strong>biomasa y biogás</strong>, que el modelo preserva por ser renovable y de bajo costo variable. El gasoil y el fueloil desaparecen por completo del despacho óptimo.</p>
+    <p style="font-size:11px; color:#aaa; margin-top:6px;">Fuente CVP: CAMMESA — Informe de Combustibles, marzo 2026.</p>
+  </div>
+
+  <div class="chart-wrap" style="margin-top: 24px;">
+    <div class="chart-label">Ritmo de construcción renovable necesario para alcanzar la meta (MW/año)</div>
+    <div id="c-pace" style="height:320px"></div>
+  </div>
+
+  <div class="gap-box" style="border-left: 3px solid #dc2626;">
+    <h3>El cuello de botella no es la inversión: es la transmisión</h3>
+    <p>
+      El recurso físico está donde siempre estuvo: Patagonia tiene uno de los mejores
+      recursos eólicos del mundo, con un factor de capacidad promedio del <strong>44,5%</strong>
+      y sitios de excelencia que superan el 60% (Jones, <em>Ciencia e Investigación</em>).
+      NOA y Cuyo concentran irradiación solar entre las más altas del planeta.
+      Estas regiones están a 1.000–2.000 km de los centros de demanda.
+    </p>
+    <p>
+      El modelo PyPSA-AR, en su versión actual (k=10 clusters), no valida
+      la distribución geográfica de los recursos: asigna capacidad nueva donde
+      la red es conveniente, no necesariamente donde el viento o el sol existen.
+      Esa limitación no invalida la conclusión sobre transmisión, pero sí obliga
+      a leer los resultados por región con cautela.
+    </p>
+    <p>
+      Lo que el modelo sí captura con solidez es el problema de infraestructura:
+      en cualquier escenario ambicioso de renovables, los corredores
+      Patagonia→AMBA y NOA→Centro requieren refuerzo de transmisión.
+      Sin esa inversión, la energía generada no llega a donde se consume.
+    </p>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:16px;">
+    <div class="chart-label">Asimetría estructural — capacidad renovable instalada vs demanda eléctrica, por macro-región (%)</div>
+    <div id="c-trans" style="height:300px"></div>
+    <p style="font-size:11px; color:#aaa; margin-top:6px; padding: 0 4px 8px;">
+      Distribución regional estimada a partir de MATER/CAMMESA 2025. Demanda: estimación basada en distribución provincial CAMMESA. Las zonas con barras azules &gt; rojas son <em>exportadoras netas</em> y requieren capacidad de evacuación; las rojas &gt; azules son <em>importadoras</em> y dependen de los corredores de 500 kV.
+    </p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="escenarios">
+  <div class="section-label">04 — Tres escenarios posibles</div>
+  <h2>¿Qué 2035 es más probable?</h2>
+  <p class="desc">
+    El modelo permite contrastar el escenario óptimo técnico frente a caminos condicionados por la realidad económica o regulatoria del país. Evaluamos tres variantes:
+  </p>
+
+  <div class="chart-wrap">
+    <div class="chart-label">Generación por Tecnología por Escenario al 2035 (GWh)</div>
+    <div id="c-scenarios" style="height:340px"></div>
+  </div>
+
+  <div style="background:#fff; border:1px solid #e0e0e0; border-radius:4px; padding:28px 32px; margin-top:16px; border-top: 3px solid #dc2626;">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#dc2626; margin-bottom:10px;">El factor gas — datos reales CAMMESA</div>
+    <h3 style="font-size:18px; font-weight:700; color:#111; margin-bottom:12px;">El gas no tiene un precio: tiene una distribución. Y el modelo la vio en su mejor momento.</h3>
+    <p style="font-size:14px; color:#555; margin-bottom:16px; line-height:1.65;">
+      El costo variable de generación a gas (CVP: combustible + O&amp;M) no es un número fijo. Entre enero 2021 y diciembre 2024, osciló entre <strong>$25 USD/MWh</strong> en verano y <strong>$115 USD/MWh</strong> en el pico de invierno 2022. El modelo PyPSA-AR calibró su despacho en la semana del 1 al 7 de febrero de 2024 — uno de los meses con el CVP más bajo del período. Fuente: CAMMESA, Informe de Combustibles.
+    </p>
+    <!-- KPI strip -->
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#e0e0e0; border:1px solid #e0e0e0; border-radius:4px; overflow:hidden; margin-bottom:16px;">
+      <div style="background:#fff; padding:14px 16px;">
+        <div style="font-size:18px; font-weight:700; color:#059669; letter-spacing:-0.5px;">$25/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">CVP mínimo (dic 2023)</div>
+      </div>
+      <div style="background:#fff; padding:14px 16px;">
+        <div style="font-size:18px; font-weight:700; color:#dc2626; letter-spacing:-0.5px;">$115/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">CVP máximo (jul 2022)</div>
+      </div>
+      <div style="background:#fff; padding:14px 16px;">
+        <div style="font-size:18px; font-weight:700; color:#2563eb; letter-spacing:-0.5px;">$36,7/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">Mes de calibración PyPSA (feb 2024)</div>
+      </div>
+      <div style="background:#fff; padding:14px 16px;">
+        <div style="font-size:18px; font-weight:700; color:#d97706; letter-spacing:-0.5px;">$64/MWh</div>
+        <div style="font-size:11px; color:#888; margin-top:3px;">Invierno "normal" (jul 2024)</div>
+      </div>
+    </div>
+    <div style="font-size:11px; color:#aaa; margin-bottom:6px;">CVP generación a gas (combustible + O&amp;M) — u$s/MWh mensual. Zonas sombreadas = invierno (jun–ago). Fuente: CAMMESA.</div>
+    <div id="c-gas-cvp" style="height:280px; margin-bottom:18px;"></div>
+
+    <p style="font-size:14px; color:#444; line-height:1.7; margin-bottom:10px;">
+      El modelo PyPSA-AR calibró su despacho en la semana del 1 al 7 de febrero de 2024 —
+      cuando el CVP del gas era $36,7/MWh, uno de los valores más bajos del período 2021–2024.
+      Esto no es un error del modelo: febrero es una semana de demanda baja, ideal para validar
+      el flujo de potencia. Pero implica que el costo del gas visto por el modelo en su etapa de
+      calibración es <strong>representativo del verano, no del año completo</strong>.
+    </p>
+    <p style="font-size:14px; color:#444; line-height:1.7; margin-bottom:10px;">
+      En los inviernos 2022 y 2023, el CVP superó los $80–115 USD/MWh, impulsado por precios
+      de LNG de importación (crisis Ucrania) y picos de demanda. Incluso en el invierno 2024 —
+      sin tensiones geopolíticas extremas — el CVP llegó a $64–65 USD/MWh. En esos meses, una
+      turbina eólica o panel solar con su inversión amortizada hubiera generado <strong>energía
+      más barata que el gas</strong>.
+    </p>
+    <p style="font-size:14px; color:#444; line-height:1.7; margin-bottom:0;">
+      La ventaja competitiva del parque térmico existente (bajo CVP, sin nueva inversión de capital)
+      es real y no debe descartarse. Pero esa ventaja es <strong>estacional</strong>: es máxima en
+      verano, y en los picos de invierno — exactamente cuando el sistema es más vulnerable — el
+      argumento económico se invierte. Ahí es donde las renovables ofrecen seguridad energética
+      con valor concreto, no solo ambiental.
+    </p>
+  </div>
+
+  <div style="background:#fff; border:1px solid #e0e0e0; border-radius:4px; padding:28px 32px; margin-top:16px;">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#888; margin-bottom:10px;">Escenario B — Trayectoria histórica</div>
+    <h3 style="font-size:18px; font-weight:700; color:#111; margin-bottom:12px;">¿Qué pasa si seguimos al ritmo post-Ley 27.191?</h3>
+    <p style="font-size:14px; color:#444; line-height:1.7; margin-bottom:16px;">
+      Entre 2016 y 2025 Argentina incorporó en promedio <strong>479 MW eólicos/año</strong>
+      y <strong>273 MW solares/año</strong>. Si ese ritmo se mantiene durante la próxima
+      década sin aceleración ni freno:
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#e0e0e0; border:1px solid #e0e0e0; border-radius:4px; overflow:hidden; margin-bottom:16px;">
+      <div style="background:#fff; padding:16px 18px;">
+        <div style="font-size:22px; font-weight:700; color:#111; letter-spacing:-0.5px;">9.285 MW</div>
+        <div style="font-size:12px; color:#888; margin-top:3px;">Capacidad eólica 2035</div>
+      </div>
+      <div style="background:#fff; padding:16px 18px;">
+        <div style="font-size:22px; font-weight:700; color:#111; letter-spacing:-0.5px;">5.192 MW</div>
+        <div style="font-size:12px; color:#888; margin-top:3px;">Capacidad solar 2035</div>
+      </div>
+      <div style="background:#fff; padding:16px 18px;">
+        <div style="font-size:22px; font-weight:700; color:#d97706; letter-spacing:-0.5px;">~40%</div>
+        <div style="font-size:12px; color:#888; margin-top:3px;">Share renovable 2035</div>
+      </div>
+      <div style="background:#fff; padding:16px 18px;">
+        <div style="font-size:22px; font-weight:700; color:#dc2626; letter-spacing:-0.5px;">~100 TWh</div>
+        <div style="font-size:12px; color:#888; margin-top:3px;">Gas necesario para cerrar la brecha</div>
+      </div>
+    </div>
+    <div id="c-traj" style="height:260px; margin-bottom:16px;"></div>
+    <p style="font-size:11px; color:#aaa; margin-bottom:14px; margin-top:-8px;">
+      Línea sólida = capacidad instalada real (2016–2025). Línea punteada = extrapolación al ritmo post-Ley 27.191. Quiebre en 2025.
+    </p>
+    <p style="font-size:14px; color:#444; line-height:1.7;">
+      El escenario histórico no es pesimista — implica continuar el mejor ciclo
+      inversor de la historia energética argentina. El problema es que no alcanza:
+      con una demanda de 187 TWh, los ~75 TWh renovables que generaría ese parque
+      (estimado según capacidades proyectadas y factores de carga históricos)
+      dejan una brecha de ~100 TWh que, en Argentina, se cierra con gas.
+    </p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section" id="limites">
+  <div class="section-label">05 — Viabilidad Comercial y Condiciones de Contorno</div>
+  <h2>Consideraciones estratégicas para la implementación</h2>
+  <p class="desc">
+    El modelo PyPSA-AR nos muestra el camino óptimo ideal en términos de costos de ingeniería. Sin embargo, para que el mercado construya esa capacidad en el mundo real, la regulación y la economía deben resolver desafíos clave.
+  </p>
+
+  <div class="challenge-list">
+    <div class="challenge-card" style="border-left-color: #2563eb;">
+      <strong>1. El costo de pedir prestado (La barrera del financiamiento)</strong>
+      <p>Las tecnologías eólica y solar son de capital intensivo (CAPEX puro): demandan casi el 100% de la inversión el primer día, pero tienen costo operativo variable cero. El modelo asume un entorno internacional normalizado con un WACC bajo (4% al 5%).</p>
+      <p>En la realidad argentina, la prima de riesgo soberano eleva históricamente el costo de capital por encima de lo que el modelo asume. Esto cambia por completo la ecuación económica: encarece el costo financiero de las renovables y les resta competitividad frente a las opciones térmicas (como los ciclos combinados), que requieren menos capital inicial pero gastan mucho combustible a lo largo del tiempo.</p>
+    </div>
+
+    <div class="challenge-card" style="border-left-color: #059669;">
+      <strong>2. Las centrales viejas ya están pagadas (La competencia heredada)</strong>
+      <p>El parque termoeléctrico existente opera bajo la lógica de "costos hundidos": la inversión inicial de los ciclos combinados y turbinas de gas ya fue amortizada en años anteriores. Por ende, en el mercado diario compiten calculando casi exclusivamente el costo del gas que queman.</p>
+      <p>Esto genera una inercia contractual alta en los contratos de CAMMESA (PPA) que limita o retrasa el desplazamiento físico de las máquinas viejas por nuevas granjas de generación limpia, a menos que existan señales de precio específicas para el retiro de activos ineficientes.</p>
+    </div>
+
+    <div class="challenge-card" style="border-left-color: #d97706;">
+      <strong>3. Quién paga las líneas de alta tensión (El dilema del transporte)</strong>
+      <p>Como los mejores vientos están en la Patagonia y la máxima radiación solar en el NOA, el modelo satura rápidamente la red de transporte y exige expandir miles de kilómetros de líneas de 500 kV. El problema comercial es el esquema de repago: los desarrolladores privados de parques no tienen incentivos económicos para financiar infraestructura pública de transmisión troncal si no pueden asegurar la captura exclusiva de ese beneficio.</p>
+      <p>Sin reformas regulatorias que resuelvan la articulación público-privada para la expansión de la red de transporte en alta tensión, el potencial de escala óptimo arrojado por el simulador se mantendrá bloqueado.</p>
+    </div>
+  </div>
+
+  <div class="lab-box">
+    <h3>El modelo como un "laboratorio": Parámetros de simulación</h3>
+    <p class="lab-intro">
+      Lo más potente de PyPSA-AR es que permite modificar todas las variables de entrada del sistema para estresar la red y evaluar realidades alternativas. Estos son todos los factores que admite el simulador:
+    </p>
+    <div class="lab-grid">
+      <div class="lab-category">
+        <h4>1. Macroeconomía y Costos</h4>
+        <ul class="lab-list">
+          <li><strong>Tasa de Descuento (WACC):</strong> Permite ajustar el costo de capital de forma diferenciada por tecnología para simular riesgo financiero.</li>
+          <li><strong>Costos de Inversión (CAPEX):</strong> Setea el costo por MW instalado para capturar curvas de aprendizaje tecnológico globales.</li>
+          <li><strong>Costos Fijos de Operación (FOM):</strong> El gasto fijo anual de mantener las plantas disponibles sin contar combustible.</li>
+        </ul>
+      </div>
+      <div class="lab-category">
+        <h4>2. Combustibles y Penalizaciones</h4>
+        <ul class="lab-list">
+          <li><strong>Precio del Gas en boca de pozo:</strong> Modifica el valor base del gas de Vaca Muerta para ver cuándo deja de ser competitivo.</li>
+          <li><strong>Precio del GNL y Combustibles Líquidos:</strong> Permite ingresar los costos estacionales de importación en barcos o el uso de gasoil.</li>
+          <li><strong>Costo de la Energía No Suministrada (ENS):</strong> Setea el costo de penalización por desabastecimiento o cortes de energía.</li>
+        </ul>
+      </div>
+      <div class="lab-category">
+        <h4>3. Clima y Demanda</h4>
+        <ul class="lab-list">
+          <li><strong>Tasa de Crecimiento de Demanda:</strong> Modifica la proyección del consumo anual del país ante escenarios de crecimiento o estancamiento.</li>
+          <li><strong>Perfiles de Disponibilidad (Años Históricos):</strong> Carga series de radiación y viento de años específicos para simular sequías extremas.</li>
+        </ul>
+      </div>
+      <div class="lab-category">
+        <h4>4. Restricciones de Red</h4>
+        <ul class="lab-list">
+          <li><strong>Límites de expansión de líneas:</strong> Permite "bloquear" la ampliación de corredores de 500 kV específicos para estresar el transporte.</li>
+          <li><strong>Penetración Renovable (Curtailment):</strong> Configura cuánta energía limpia se permite desperdiciar por congestión de los cables.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ficha técnica del modelo -->
+  <div style="background:#f8faff; border:1px solid #c7d7f5; border-radius:6px; padding:32px; margin-top:32px;">
+    <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#2563eb; margin-bottom:6px;">Referencia técnica</div>
+    <h3 style="font-size:17px; font-weight:700; color:#111; margin-bottom:20px;">PyPSA-AR v0.1 — Resumen del modelo, parámetros y limitaciones</h3>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;">
+
+      <!-- Columna 1: El modelo -->
+      <div style="background:#fff; border:1px solid #dbeafe; border-radius:5px; padding:20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#1e40af; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #eff6ff;">El modelo</div>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Tipo:</strong> DC Optimal Power Flow (OPF lineal), solver HiGHS open-source.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Red cubierta:</strong> Backbone 500 kV del SADI — 95 barras, 103 líneas activas, 300 estaciones transformadoras.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Resolución espacial:</strong> k=10 clusters (agrupación de nodos para escenarios 2035).</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Calibración:</strong> Semana del 1–7 feb 2024. Captura el 96,7% de la generación real CAMMESA.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:0; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Cobertura:</strong> ~91% de la capacidad instalada del SADI (39.873 MW de ~44.000 MW totales).</li>
+        </ul>
+      </div>
+
+      <!-- Columna 2: Indicadores modificables -->
+      <div style="background:#fff; border:1px solid #dbeafe; border-radius:5px; padding:20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#1e40af; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #eff6ff;">Indicadores modificables</div>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>WACC por tecnología:</strong> Costo de capital diferenciado para renovables, nuclear y gas.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>CAPEX y OPEX (NREL ATB):</strong> Curvas de costo de inversión y operación por tecnología y año.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Precio del gas:</strong> Gas local (Vaca Muerta), GNL importado y combustibles líquidos por separado.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Demanda proyectada:</strong> Tasa de crecimiento anual (base: +3% CAGR) y perfil horario por nodo.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:0; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#2563eb;">•</span><strong>Capacidades máximas:</strong> Límites de expansión por tecnología o corredor de transmisión.</li>
+        </ul>
+      </div>
+
+      <!-- Columna 3: Limitaciones actuales -->
+      <div style="background:#fff; border:1px solid #fee2e2; border-radius:5px; padding:20px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:#dc2626; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #fff1f2;">Limitaciones (v0.1)</div>
+        <ul style="list-style:none; padding:0; margin:0;">
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#dc2626;">•</span><strong>Solo red 500 kV:</strong> La red de 132–330 kV (distribución regional) queda fuera del modelo actual.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#dc2626;">•</span><strong>Sin restricciones operativas:</strong> No modela ramp-rates, despacho hidroeléctrico estacional ni restricciones de cuenca.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#dc2626;">•</span><strong>Interconexión inactiva:</strong> La conexión Argentina–Brasil no despacha en el modelo (Brasil importa 0 GWh), porque las restricciones de combustible estacionales no están aún implementadas.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:9px; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#dc2626;">•</span><strong>WACC internacional:</strong> Costos de capital basados en NREL ATB; no refleja condiciones de financiamiento argentinas.</li>
+          <li style="font-size:13px; color:#374151; line-height:1.6; margin-bottom:0; padding-left:14px; position:relative;"><span style="position:absolute;left:0;color:#dc2626;">•</span><strong>Una semana de calibración:</strong> Validado sobre feb 1–7, 2024 — verano, demanda baja y gas barato. No representa condiciones de invierno ni de año completo.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p style="font-size:12px; color:#6b7280; margin-top:18px; margin-bottom:0;">
+      Fuente: Barbarán, Bregman, Ramírez, Caratori, Carlino — <em>PyPSA-AR: Open-Source Model for the Argentine Power System</em>, abril 2026.
+      Código disponible en <strong>github.com/FTDT-PyPSA/PyPSA-AR</strong>.
+      Los "próximos pasos" declarados por el equipo incluyen: extensión a red 132–500 kV, restricciones operativas (ramp-rates, hidro estacional, dual-fuel) e integración con la red de gas natural.
+    </p>
+  </div>
+
+</div>
+
+</div><footer style="max-width:860px; margin: 0 auto; padding: 20px 32px 48px;">
+  <strong>Datos:</strong> CAMMESA — Resumen de las Principales Variables del MEM 2005–2025 ·
+  CAMMESA — Consumos y Precios Combustibles 2021–2024 (dic. 2024) ·
+  CAMMESA — Informe de Combustibles marzo 2026 ·
+  PyPSA-AR v0.1 (Barbarán, Bregman, Ramírez, Caratori, Carlino — ITDT/INETTT, abril 2026;
+  datos CAMMESA 2024, red GeoSADI 500 kV, costos NREL ATB 2035, Solver HiGHS) ·
+  Jones, <em>Ciencia e Investigación</em> (vientos patagónicos) ·
+  Código disponible en <strong>github.com/FTDT-PyPSA/PyPSA-AR</strong>.
+</footer>
+
+<script>
+var cfg = { responsive: true, displayModeBar: false };
+function getBaseLayout() {
+  return {
+    paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { family: '-apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif', size: 11, color: '#666' },
+    margin: { t: 30, r: 40, b: 60, l: 60 },
+    xaxis: { gridcolor: '#ebebeb', zerolinecolor: '#ccc', linecolor: '#ddd', tickcolor: '#ddd', color: '#888' },
+    yaxis: { gridcolor: '#ebebeb', zerolinecolor: '#ccc', linecolor: '#ddd', tickcolor: '#ddd', color: '#888' }
+  };
+}
+
+var yrs = [2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+var hidro  = [37891.9,41080.0,35426.2,35121.3,38799.5,38799.2,38083.6,35172.5,39055.6,39206.7,39840.4,36192.0,39584.0,39951.7,35370.2,29093.0,24116.2,30186.3,39331.8,33424.0,30144.2];
+var ccgt   = [32811.8,33036.1,36510.9,38008.2,35590.8,41104.4,44876.8,51838.0,51640.9,51039.0,52543.7,53910.9,61051.0,62499.4,60630.7,67216.1,74133.6,64571.2,60264.8,64850.7,66923.1];
+var ocgt   = [5790.5,6677.1,8118.3,10680.5,10150.1,9485.9,9371.8,10393.0,12878.2,12136.3,14147.0,17574.6,13145.0,14038.8,12547.8,8403.0,8109.7,8139.4,6434.3,5433.4,3987.6];
+var steam  = [12748.4,14215.0,16380.4,18024.5,15038.9,14651.6,17682.1,18391.7,16107.4,17799.4,17281.8,16101.1,11506.2,8727.2,5066.1,4703.2,5510.7,6718.9,4158.6,3631.6,3264.5];
+var nuc    = [6374.4,7153.2,6720.7,6849.4,7588.7,6691.6,5892.4,5904.1,5732.5,5257.7,6518.5,7677.3,5716.2,6452.9,7927.1,10010.9,10169.7,7469.2,8963.0,10449.0,10760.6];
+var wind   = [0,0,0,0,0,0.1,16.0,348.9,447.0,613.3,593.0,546.8,615.8,1412.7,4996.0,9410.6,12937.6,14164.5,14475.4,16164.5,18628.1];
+var solar  = [0,0,0,0,0,0,1.8,8.1,15.0,15.7,14.7,14.3,16.4,108.1,799.7,1344.3,2195.6,2928.3,3259.5,3941.3,5105.8];
+var bio    = [0.1,0,0,0,23.9,74.6,97.6,163.4,242.5,215.4,278.6,250.7,306.7,397.0,554.7,725.1,1128.2,1186.9,1167.7,1259.2,1551.4];
+var cap_w  = [0,0,0,0,0,0.2,6.5,109.1,162.2,187.4,187.4,187.3,226.7,750.2,1608.6,2623.1,3291.3,3309.3,3705.4,4319.4,4495.6];
+var cap_s  = [0,0,0,0,0,0,1.2,6.2,8.2,8.2,8.2,8.2,8.2,190.6,439.2,759.0,1060.2,1085.8,1365.9,1672.9,2463.8];
+var ren_sh = [1.4,2.0,1.8,1.7,1.5,1.4,1.2,1.8,1.6,1.8,1.9,2.0,2.0,2.5,6.1,10.0,13.0,13.9,14.3,16.3,18.9];
+
+var gas_total  = ccgt.map(function(v,i){ return Math.round(v + ocgt[i]); }); // CCGT + OCGT únicamente, consistente con texto y c-gap
+var ren_total  = wind.map((v,i) => Math.round(v + solar[i] + bio[i]));
+var cap_total  = cap_w.map((v,i) => Math.round(v + cap_s[i]));
+
+// 1. Stacked Area
+var layout1 = getBaseLayout(); layout1.barmode = 'stack'; layout1.showlegend = true; layout1.legend = { orientation: 'h', y: -0.2 };
+Plotly.newPlot('c-stack', [
+  { name: 'CCGT', x: yrs, y: ccgt, type: 'bar', marker: { color: '#dc2626' } },
+  { name: 'Turbinas gas', x: yrs, y: ocgt, type: 'bar', marker: { color: '#f97316' } },
+  { name: 'Turbovapor', x: yrs, y: steam, type: 'bar', marker: { color: '#94a3b8' } },
+  { name: 'Hidro', x: yrs, y: hidro, type: 'bar', marker: { color: '#059669' } },
+  { name: 'Nuclear', x: yrs, y: nuc, type: 'bar', marker: { color: '#7c3aed' } },
+  { name: 'Eólica', x: yrs, y: wind, type: 'bar', marker: { color: '#2563eb' } },
+  { name: 'Solar', x: yrs, y: solar, type: 'bar', marker: { color: '#d97706' } },
+  { name: 'Biomasa', x: yrs, y: bio, type: 'bar', marker: { color: '#65a30d' } }
+], layout1, cfg);
+
+// 2. Cobertura (RESTAURADOS HOVERTEMPLATES ORIGINALES)
+var layout2 = getBaseLayout(); layout2.showlegend = true; layout2.legend = { orientation: 'h', y: -0.25 };
+layout2.yaxis.title = 'Capacidad Instalada (MW)';
+layout2.yaxis2 = { title: '% Cobertura', overlaying: 'y', side: 'right', range: [0, 25], showgrid: false, color: '#059669', ticksuffix: '%' };
+Plotly.newPlot('c-ren', [
+  { 
+    name: 'Capacidad eólica + solar', x: yrs, y: cap_total, type: 'bar', marker: { color: '#bfdbfe' },
+    hovertemplate: '<b>Año %{x}</b><br>Capacidad: %{y:,.0f} MW<extra></extra>'
+  },
+  { 
+    name: 'Cobertura renovable (%)', x: yrs, y: ren_sh, type: 'scatter', mode: 'lines+markers', line: { color: '#059669', width: 2.5 }, yaxis: 'y2',
+    hovertemplate: '<b>Año %{x}</b><br>Cobertura: %{y:.1f}%<extra></extra>'
+  }
+], layout2, cfg);
+
+// 3. Gas vs Ren
+var layout3 = getBaseLayout(); layout3.showlegend = true; layout3.legend = { orientation: 'h', y: -0.25 };
+Plotly.newPlot('c-gas-vs-ren', [
+  { name: 'Gas (CCGT + Turbinas)', x: yrs, y: gas_total, type: 'scatter', mode: 'lines', line: { color: '#dc2626', width: 2.5 }, fill: 'tozeroy', fillcolor: 'rgba(220,38,38,0.05)' },
+  { name: 'Eólica + Solar', x: yrs, y: ren_total, type: 'scatter', mode: 'lines', line: { color: '#2563eb', width: 2.5 }, fill: 'tozeroy', fillcolor: 'rgba(37,99,235,0.05)' }
+], layout3, cfg);
+
+// 4. Gap
+var techs_gap = ['Gas','Hidro','Nuclear','Eólica','Solar','Otros'];
+var share_2025  = [48.2, 20.5, 7.3, 12.7, 3.5, 7.8];
+var share_2035  = [24.8, 19.9, 5.4, 37.7, 9.8, 2.4];
+var layout4 = getBaseLayout(); layout4.barmode = 'group'; layout4.showlegend = true; layout4.yaxis = { ticksuffix: '%', gridcolor: '#ebebeb' };
+Plotly.newPlot('c-gap', [
+  { name: '2025 Real', x: techs_gap, y: share_2025, type: 'bar', marker: { color: '#fca5a5' } },
+  { name: '2035 PyPSA BAU', x: techs_gap, y: share_2035, type: 'bar', marker: { color: '#2563eb' } }
+], layout4, cfg);
+
+// 5. Ritmo de Construcción
+var pace_years  = ['2010–2015\n(Pre-Ley)', '2016–2025\n(Ley 27.191)', '2025–2035\n(Modelo BAU)'];
+var pace_wind   = [37, 479, 1725];
+var pace_solar  = [2,  273,  872];
+var layout5 = getBaseLayout(); layout5.barmode = 'stack'; layout5.showlegend = true; layout5.legend = { orientation: 'h', y: -0.2 }; layout5.xaxis.tickangle = 0;
+Plotly.newPlot('c-pace', [
+  { name: 'Eólica (MW/año)', x: pace_years, y: pace_wind, type: 'bar', marker: { color: '#2563eb' } },
+  { name: 'Solar (MW/año)', x: pace_years, y: pace_solar, type: 'bar', marker: { color: '#d97706' } }
+], layout5, cfg);
+
+// 6. CVP gas mensual — datos reales CAMMESA (Consumos y Precios Combustibles 2021-2024)
+var gas_months = ['2021-01','2021-02','2021-03','2021-04','2021-05','2021-06','2021-07','2021-08','2021-09','2021-10','2021-11','2021-12','2022-01','2022-02','2022-03','2022-04','2022-05','2022-06','2022-07','2022-08','2022-09','2022-10','2022-11','2022-12','2023-01','2023-02','2023-03','2023-04','2023-05','2023-06','2023-07','2023-08','2023-09','2023-10','2023-11','2023-12','2024-01','2024-02','2024-03','2024-04','2024-05','2024-06','2024-07','2024-08','2024-09','2024-10','2024-11','2024-12'];
+var gas_cvp_total = [33.31,32.69,34.12,35.65,45.59,54.70,58.37,66.97,50.25,34.31,34.56,36.92,37.08,33.59,33.00,34.29,62.94,87.08,115.26,68.78,55.84,34.72,35.17,39.49,35.92,34.63,37.13,36.31,81.61,85.69,84.10,58.76,48.06,33.78,34.57,25.07,35.16,36.67,32.95,35.34,55.75,65.80,64.33,64.45,54.83,43.02,38.92,34.27];
+
+var layout6 = getBaseLayout();
+layout6.showlegend = true;
+layout6.xaxis = Object.assign({}, layout6.xaxis, { tickangle: -45, tickfont: { size: 9 } });
+layout6.yaxis = { title: 'u$s/MWh', gridcolor: '#ebebeb', zerolinecolor: '#ccc', linecolor: '#ddd', tickcolor: '#ddd', color: '#888', rangemode: 'tozero' };
+layout6.legend = { orientation: 'h', y: -0.42, font: { size: 11 } };
+layout6.shapes = [
+  { type: 'rect', x0: '2021-05', x1: '2021-09', y0: 0, y1: 125, fillcolor: 'rgba(220,38,38,0.07)', line: { width: 0 } },
+  { type: 'rect', x0: '2022-05', x1: '2022-09', y0: 0, y1: 125, fillcolor: 'rgba(220,38,38,0.07)', line: { width: 0 } },
+  { type: 'rect', x0: '2023-05', x1: '2023-09', y0: 0, y1: 125, fillcolor: 'rgba(220,38,38,0.07)', line: { width: 0 } },
+  { type: 'rect', x0: '2024-05', x1: '2024-09', y0: 0, y1: 125, fillcolor: 'rgba(220,38,38,0.07)', line: { width: 0 } }
+];
+layout6.annotations = [
+  { x: '2022-07', y: 115.26, text: 'Pico LNG/Ucrania<br>$115/MWh', showarrow: true, arrowhead: 2, arrowsize: 0.8, arrowcolor: '#dc2626', font: { size: 10, color: '#dc2626' }, ay: -38, ax: 0 },
+  { x: '2024-02', y: 36.67, text: 'Calibración<br>PyPSA', showarrow: true, arrowhead: 2, arrowsize: 0.8, arrowcolor: '#2563eb', font: { size: 10, color: '#2563eb' }, ay: 44, ax: 30 }
+];
+
+Plotly.newPlot('c-gas-cvp', [
+  {
+    x: gas_months, y: gas_cvp_total,
+    type: 'scatter', mode: 'lines+markers',
+    line: { color: '#dc2626', width: 2 },
+    marker: { size: 4, color: '#dc2626' },
+    name: 'CVP gas total (u$s/MWh)',
+    hovertemplate: '<b>%{x}</b><br>CVP: $%{y:.1f}/MWh<extra></extra>'
+  },
+  {
+    x: ['2024-02'], y: [36.67],
+    type: 'scatter', mode: 'markers',
+    marker: { size: 11, color: '#2563eb', symbol: 'diamond' },
+    name: 'Calibración PyPSA (feb 2024)',
+    hovertemplate: '<b>Feb 2024</b><br>Calibración PyPSA: $36,7/MWh<extra></extra>'
+  }
+], layout6, cfg);
+
+// 7. Escenarios
+var sc_labels = ['Gas', 'Hidro', 'Nuclear', 'Eólica', 'Solar', 'Otros'];
+var scA = [46412, 37297, 10052, 70603, 18327, 4715]; var scB = [100457, 33000, 11000, 31360, 8855, 3000]; var scC = [118554, 33000, 11000, 17248, 4870, 3000];
+var layoutScenarios = getBaseLayout(); layoutScenarios.barmode = 'group'; layoutScenarios.showlegend = true; layoutScenarios.legend = { orientation: 'h', y: -0.25 };
+Plotly.newPlot('c-scenarios', [
+  { name: 'A — Óptimo técnico', x: sc_labels, y: scA, type: 'bar', marker: { color: '#2563eb' } },
+  { name: 'B — Inercia Histórica', x: sc_labels, y: scB, type: 'bar', marker: { color: '#a3e635' } },
+  { name: 'C — Gas doméstico + WACC argentino', x: sc_labels, y: scC, type: 'bar', marker: { color: '#f59e0b' } }
+], layoutScenarios, cfg);
+
+// 8. Trayectoria
+var traj_hist_years = [2016,2017,2018,2019,2020,2021,2022,2023,2024,2025];
+var traj_hist_w     = [187.3,226.7,750.2,1608.6,2623.1,3291.3,3309.3,3705.4,4319.4,4495.6]; var traj_hist_s     = [8.2,8.2,190.6,439.2,759.0,1060.2,1085.8,1365.9,1672.9,2463.8];
+var traj_fut_years  = [2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035];
+var traj_fut_w = [4496, 4975, 5454, 5933, 6412, 6891, 7370, 7849, 8328, 8807, 9286]; var traj_fut_s = [2464, 2737, 3010, 3283, 3556, 3829, 4102, 4375, 4648, 4921, 5194];
+var layoutTraj = getBaseLayout(); layoutTraj.showlegend = true; layoutTraj.legend = { orientation: 'h', y: -0.25 }; layoutTraj.yaxis.range = [0, 10000];
+Plotly.newPlot('c-traj', [
+  { name: 'Eólica Real', x: traj_hist_years, y: traj_hist_w, type: 'scatter', mode: 'lines', line: { color: '#2563eb' } },
+  { name: 'Eólica Proyección', x: traj_fut_years, y: traj_fut_w, type: 'scatter', mode: 'lines', line: { color: '#2563eb', dash: 'dot' } },
+  { name: 'Solar Real', x: traj_hist_years, y: traj_hist_s, type: 'scatter', mode: 'lines', line: { color: '#d97706' } },
+  { name: 'Solar Proyección', x: traj_fut_years, y: traj_fut_s, type: 'scatter', mode: 'lines', line: { color: '#d97706', dash: 'dot' } }
+], layoutTraj, cfg);
+
+// 9. Transmisión: asimetría regional capacidad renovable vs demanda
+// Fuente: distribución estimada MATER/CAMMESA 2025
+// Patagonia: ~27% renovables (eólica Chubut/RN/Neuquén) — 9% demanda
+// Bs As prov: ~37% renovables (mayor parque eólico, MATER 39% de wind) — 13% demanda
+// NOA/Cuyo: ~22% renovables (solar NOA + eólica Mendoza) — 18% demanda
+// Centro/NEA: ~11% renovables (eólica Córdoba + solar) — 22% demanda
+// AMBA: ~3% renovables (solar urbano) — 38% demanda
+var trans_regions = ['AMBA', 'Centro / NEA', 'NOA / Cuyo', 'Bs As Prov.', 'Patagonia'];
+var trans_ren     = [3,      11,             22,           37,            27];
+var trans_dem     = [38,     22,             18,           13,            9];
+
+var layoutTrans = getBaseLayout();
+layoutTrans.barmode = 'group';
+layoutTrans.showlegend = true;
+layoutTrans.legend = { orientation: 'h', y: -0.18, font: { size: 11 } };
+layoutTrans.margin = { t: 16, r: 20, b: 56, l: 110 };
+layoutTrans.xaxis = {
+  ticksuffix: '%',
+  gridcolor: '#ebebeb', zerolinecolor: '#ccc', linecolor: '#ddd', tickcolor: '#ddd', color: '#888',
+  range: [0, 45]
+};
+layoutTrans.yaxis = {
+  gridcolor: '#ebebeb', zerolinecolor: '#ccc', linecolor: '#ddd', tickcolor: '#ddd', color: '#888',
+  tickfont: { size: 12 }
+};
+layoutTrans.annotations = [
+  { x: 44, y: 'Patagonia',   text: 'FC eólico ~44,5%', showarrow: false, font: { size: 10, color: '#2563eb' }, xanchor: 'right' },
+  { x: 44, y: 'AMBA',        text: 'FC eólico ~25%',   showarrow: false, font: { size: 10, color: '#dc2626' }, xanchor: 'right' }
+];
+
+Plotly.newPlot('c-trans', [
+  {
+    name: 'Capacidad renovable instalada',
+    x: trans_ren, y: trans_regions,
+    type: 'bar', orientation: 'h',
+    marker: { color: '#2563eb' },
+    hovertemplate: '<b>%{y}</b><br>Renovables: <b>%{x}%</b> del total nacional<extra></extra>'
+  },
+  {
+    name: 'Demanda eléctrica',
+    x: trans_dem, y: trans_regions,
+    type: 'bar', orientation: 'h',
+    marker: { color: '#dc2626', opacity: 0.7 },
+    hovertemplate: '<b>%{y}</b><br>Demanda: <b>%{x}%</b> del total nacional<extra></extra>'
+  }
+], layoutTrans, cfg);
+</script>
+</body>
+</html>

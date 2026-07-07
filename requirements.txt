@@ -1,0 +1,6 @@
+pandas
+numpy
+plotly
+kaleido
+openpyxl
+jupyter
