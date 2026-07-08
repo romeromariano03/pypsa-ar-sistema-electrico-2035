@@ -47,13 +47,17 @@ sobre transmisión, calibración del gas y viabilidad comercial.*
   la prima de riesgo país argentina eleva el costo de capital real y resta competitividad a las
   renovables (CAPEX-intensivas) frente al parque térmico ya amortizado.
 
-<p align="center">
-  <img src="assets/mix_generacion_2005_2025.png" alt="Mix de generación eléctrica argentina 2005-2025" width="100%">
-</p>
+**Generación por tecnología — GWh anuales (2005–2025)**
 
-<p align="center">
-  <img src="assets/paradoja_gas_renovables.png" alt="Gas vs renovables: la paradoja del crecimiento renovable sin desplazamiento térmico" width="100%">
-</p>
+![Mix de generación eléctrica argentina 2005-2025](assets/c-stack.png)
+
+**Gas vs Renovables — GWh anuales**
+
+![Gas vs renovables](assets/c-gas-vs-ren.png)
+
+**Mix de generación (% del total): 2025 Real vs 2035 Optimizado BAU**
+
+![Mix 2025 real vs 2035 BAU](assets/c-gap.png)
 
 ## Tres escenarios posibles hacia 2035
 
@@ -70,13 +74,17 @@ radicalmente según los supuestos:
   de las renovables y el gas de Vaca Muerta compitiendo a precio doméstico subsidiado, el gas
   vuelve a ser la opción dominante (63% de la matriz).
 
-<p align="center">
-  <img src="assets/escenarios_2035.png" alt="Tres escenarios posibles para 2035 según PyPSA-AR" width="80%">
-</p>
+**Generación por tecnología por escenario al 2035 (GWh)**
 
-<p align="center">
-  <img src="assets/ritmo_construccion.png" alt="Ritmo de construcción renovable necesario para alcanzar el escenario óptimo" width="70%">
-</p>
+![Tres escenarios 2035](assets/c-scenarios.png)
+
+**Ritmo de construcción renovable necesario para alcanzar la meta (MW/año)**
+
+![Ritmo de construcción](assets/c-pace.png)
+
+**Asimetría estructural — capacidad renovable instalada vs demanda eléctrica, por macro-región (%)**
+
+![Asimetría regional renovables vs demanda](assets/c-trans.png)
 
 ## Qué hay en este repositorio
 
@@ -91,9 +99,9 @@ informe/
   sistema-electrico-argentino-2035.html   # Informe final, standalone, con gráficos
                                            # interactivos (Plotly) embebidos.
 assets/
-  hero.png, mix_generacion_2005_2025.png,
-  paradoja_gas_renovables.png, escenarios_2035.png,
-  ritmo_construccion.png       # Versiones estáticas de los gráficos, para este README.
+  c-stack.png, c-gas-vs-ren.png, c-gap.png,
+  c-scenarios.png, c-pace.png, c-trans.png,
+  c-ren.png, c-gas-cvp.png, c-traj.png   # Exportación PNG de los gráficos del informe.
 requirements.txt
 ```
 
